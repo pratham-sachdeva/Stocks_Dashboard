@@ -1,7 +1,7 @@
 streamlit==1.24.0
 yfinance>=0.2.26
 plotly==5.0.0
-plotly-resampler==0.8.4rc1
+plotly-resampler>=0.8.4rc1
 requests==2.31.0
 numpy==1.21.1
 beautifulsoup4>=4.11.1
