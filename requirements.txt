@@ -1,3 +1,4 @@
+python_version ==3.9.12
 streamlit==1.24.0
 yfinance>=0.2.26
 plotly>=5.5.0,<6.0.0
