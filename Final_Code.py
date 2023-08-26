@@ -202,7 +202,7 @@ if start_date >= end_date:
 stock_data = get_stock_data(selected_stock, start_date, end_date)
 other_data = get_currency(selected_stock)
 
-st.subheader(f"{other_data[0]} ({selected_stock}) Stock Price")
+st.header(f"{other_data[0]} ({selected_stock}) Stock Price")
 
 if stock_data.empty:
     st.write("Data not available for this stock symbol in the specified date range.")
@@ -302,6 +302,8 @@ with pricing_data:
     st.markdown(f"Standard Deviation is: <span style='color:{stdev_color}'>{round(stdev * 100, 2)}%</span>", unsafe_allow_html=True)
     
     fig = go.Figure()
+    
+    st.subheader(f"{other_data[0]} % Price Change")
 
     # Create a condition to determine the color of bars (green for positive and red for negative)
     positive_mask = updated_data['% Change'] >= 0
@@ -324,8 +326,7 @@ with pricing_data:
     ))
 
     # Customize the chart layout
-    fig.update_layout(title=f"{other_data[0]} % Price Change",
-                      xaxis_title='Date',
+    fig.update_layout(xaxis_title='Date',
                       yaxis_title='% Price Change',
                       barmode='relative',
                       legend=dict(x=0, y=1.2))
