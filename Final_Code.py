@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[141]:
+# In[6]:
 
 
 import streamlit as st
@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
 
-# In[142]:
+# In[7]:
 
 
 # Fetch the list of S&P 500 components from Wikipedia
@@ -54,7 +54,7 @@ bse_sensex_data = pd.read_html(url5)[1]
 bse_sensex_tickers = bse_sensex_data['Symbol'].tolist()
 
 
-# In[143]:
+# In[8]:
 
 
 # List of available indexes
@@ -64,7 +64,7 @@ available_indexes = ["S&P 500", "NASDAQ 100", "DOWJONES", "FTSE 100", "BSE SENSE
 index_selection = st.sidebar.selectbox("Select an Index", available_indexes)
 
 
-# In[144]:
+# In[9]:
 
 
 index_mapping = {
@@ -76,13 +76,13 @@ index_mapping = {
 }
 
 
-# In[145]:
+# In[10]:
 
 
 index_symbol = index_mapping.get(index_selection)
 
 
-# In[146]:
+# In[11]:
 
 
 @st.cache_data
@@ -115,19 +115,19 @@ def get_stock_list(index_name):
     return stock_list
 
 
-# In[147]:
+# In[12]:
 
 
 ticker_list = get_stock_list(index_selection)
 
 
-# In[148]:
+# In[13]:
 
 
 st.markdown("<h1 style='text-align: center;'>Stock Market Analysis Dashboard</h1>", unsafe_allow_html=True)
 
 
-# In[149]:
+# In[14]:
 
 
 @st.cache_data
@@ -137,7 +137,7 @@ def get_stock_data(stock_symbol, start_date, end_date):
     return stock_data
 
 
-# In[150]:
+# In[15]:
 
 
 @st.cache_data
@@ -167,7 +167,7 @@ def get_index_data(index_symbol, timeframe):
     return index_data
 
 
-# In[151]:
+# In[16]:
 
 
 @st.cache_data
@@ -178,13 +178,13 @@ def get_currency(stock_symbol):
     return info,currency
 
 
-# In[152]:
+# In[17]:
 
 
 datetime.today()
 
 
-# In[ ]:
+# In[18]:
 
 
 st.sidebar.title("Select Parameters")
@@ -194,13 +194,17 @@ default_start_date = datetime.today() - timedelta(weeks=52)
 start_date = st.sidebar.date_input("Start Date", default_start_date)
 end_date = st.sidebar.date_input("End Date")
 
-# Ensure the start date is before the end date
+
+# In[19]:
+
+
 if start_date >= end_date:
     st.error("Error: Start date must be before end date.")
     
 # Fetch data and display price chart
 stock_data = get_stock_data(selected_stock, start_date, end_date)
 other_data = get_currency(selected_stock)
+
 
 st.header(f"{other_data[0]} ({selected_stock}) Stock Price")
 
@@ -212,15 +216,14 @@ else:
                                        high=stock_data['High'],
                                        low=stock_data['Low'],
                                        close=stock_data['Close']))
-    
+
     fig.update_layout(yaxis_title=f'Price ({other_data[1]})',
                       xaxis_title='Date')
-    
+
     st.plotly_chart(fig)
-    
 
 
-# In[190]:
+# In[20]:
 
 
 warning_text = "<span style='color:red;'>Bias Warning</span>"
@@ -243,7 +246,7 @@ with st.expander("About Confirmation Bias"):
     """)
 
 
-# In[154]:
+# In[21]:
 
 
 st.subheader(f"{other_data[0]} Stock Summary")
@@ -278,13 +281,13 @@ else:
     st.write("Stock data is not available. Please select a valid stock.")
 
 
-# In[155]:
+# In[22]:
 
 
 pricing_data, fundamental_data, news  = st.tabs(["Pricing Data", "Fundamental Data", "Top News"])
 
 
-# In[156]:
+# In[23]:
 
 
 with pricing_data:
@@ -335,13 +338,13 @@ with pricing_data:
     st.plotly_chart(fig)
 
 
-# In[159]:
+# In[24]:
 
 
 analyzer = SentimentIntensityAnalyzer()
 
 
-# In[160]:
+# In[25]:
 
 
 @st.cache_data
@@ -367,14 +370,14 @@ def print_stock_news(stock_symbol):
     return top_news
 
 
-# In[161]:
+# In[26]:
 
 
 if selected_stock:
     top_5_news = print_stock_news(selected_stock)
 
 
-# In[192]:
+# In[27]:
 
 
 with news:
@@ -409,7 +412,7 @@ with news:
         
 
 
-# In[163]:
+# In[28]:
 
 
 @st.cache_data
@@ -430,19 +433,32 @@ def get_fundamental_metrics(stock_symbol):
     return fundamental_metrics
 
 
-# In[164]:
+# In[29]:
 
 
 with fundamental_data:
+    
+    with st.expander("Definitions of Fundamental Data"):
+        st.write("Market Cap: Market capitalization is the total value of a company's outstanding shares of stock. It is calculated by multiplying the stock's current market price by its total number of outstanding shares.")
+        st.write("Forward P/E: Forward price-to-earnings (P/E) ratio is a valuation ratio that measures a company's current share price relative to its estimated earnings per share for the next year.")
+        st.write("Trailing P/E: Trailing price-to-earnings (P/E) ratio is a valuation ratio that measures a company's current share price relative to its earnings per share over the past 12 months.")
+        st.write("Dividend Yield: Dividend yield is a financial ratio that indicates how much a company pays out in dividends each year relative to its share price. It is usually expressed as a percentage.")
+        st.write("Earnings Per Share (EPS): Earnings per share is a measure of a company's profitability. It represents the portion of a company's profit allocated to each outstanding share of common stock.")
+        st.write("Beta: Beta measures a stock's volatility in relation to the overall market. A beta greater than 1 indicates the stock is more volatile than the market, while a beta less than 1 indicates lower volatility.")
+
+
     st.subheader(f"Fundamental Data for {selected_stock}")
 
     fundamental_metrics = get_fundamental_metrics(selected_stock)
 
     for metric, value in fundamental_metrics.items():
         st.write(f"{metric}: {value}")
+    
+    
+    
 
 
-# In[165]:
+# In[30]:
 
 
 st.header("Stock Price Comparison")
@@ -483,7 +499,7 @@ else:
     st.plotly_chart(fig)    
 
 
-# In[166]:
+# In[31]:
 
 
 st.header(f"{index_selection} Index Performance")
@@ -514,7 +530,7 @@ else:
     st.plotly_chart(fig)
 
 
-# In[167]:
+# In[72]:
 
 
 def fetch_market_cap_data(index_tickers):
@@ -525,11 +541,12 @@ def fetch_market_cap_data(index_tickers):
         try:
             stock_info = yf.Ticker(ticker).info
             if "marketCap" in stock_info and stock_info["marketCap"]:
-                if "longName" in stock_info and stock_info["longName"]:
-                    market_cap_data[ticker] = {
-                        "LongName": stock_info["longName"],
-                        "MarketCap": float(stock_info["marketCap"])
-                    }
+                
+                market_cap_data[ticker] = {
+                    "MarketCap": float(stock_info["marketCap"]),
+                    "Ticker": (ticker)
+                }
+                
                 if "sector" in stock_info and stock_info["sector"]:
                     sector_data[ticker] = {
                         "Sector": stock_info["sector"]
@@ -546,38 +563,38 @@ def fetch_market_cap_data(index_tickers):
     return merged_df
 
 
-# In[168]:
+# In[57]:
 
 
 new_tickerlist_nasdaq = ['AAPL','MSFT', 'GOOG', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'AVGO', 'ASML']
 
 
-# In[169]:
+# In[58]:
 
 
 new_tickerlist_sp500 = ['AAPL', 'MSFT', 'GOOG', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'LLY', 'V']
 
 
-# In[170]:
+# In[59]:
 
 
 new_tickerlist_dowjones = ['AAPL', 'MSFT', 'V', 'UNH', 'JNJ', 'JPM', 'WMT', 'PG', 'HD', 'CVX']
 
 
-# In[171]:
+# In[60]:
 
 
 new_tickerlist_ftse100 = ['AZN', 'SHEL', 'BA', 'BP', 'RIO', 'GSK', 'JD', 'ADM', 'CRH', 'HLN']
 
 
-# In[172]:
+# In[61]:
 
 
 new_tickerlist_bse = ['RELIANCE.BO', 'TCS.BO', 'HDFCBANK.BO', 'ICICIBANK.BO', 'HINDUNILVR.BO', 'INFY.BO', 'ITC.BO', 'SBIN.BO',
                       'BHARTIARTL.BO', 'BAJFINANCE.BO']
 
 
-# In[173]:
+# In[73]:
 
 
 
@@ -610,17 +627,18 @@ else:
     ticker_list_2 = []
 
 
-# In[ ]:
+# In[75]:
 
 
 st.header(f'Top Stocks by Market Cap - {index_selection}')
 # Plot a treemap using Plotly Express
-fig = px.treemap(top_10_stocks, path=['LongName'], values='MarketCap',
-                 color='MarketCap')
+fig = px.treemap(top_10_stocks, path= ['Ticker'], values='MarketCap',
+                 color='MarketCap', color_continuous_scale='Viridis')
+
 st.plotly_chart(fig)
 
 
-# In[194]:
+# In[40]:
 
 
 warning_text = "<span style='color:red;'>Bias Warning</span>"
@@ -640,13 +658,13 @@ with st.expander("About Herd Mentality"):
 """)
 
 
-# In[175]:
+# In[41]:
 
 
 index_data = fetch_market_cap_data(ticker_list_2)
 
 
-# In[176]:
+# In[79]:
 
 
 
@@ -655,14 +673,15 @@ sector_performance = index_data.groupby('Sector')['MarketCap'].sum().reset_index
 st.subheader(f'Sector-wise Performance for Top stocks - {index_selection}')
 fig = px.bar(sector_performance, x='Sector', y='MarketCap',
              labels={'Sector': ' ', 'MarketCap': 'Total Market Cap'},
-             color='Sector')
+             color='Sector'
+            )
 
 fig.update_xaxes(categoryorder='total descending')
 
 st.plotly_chart(fig)
 
 
-# In[177]:
+# In[43]:
 
 
 def plot_sma_vs_closing_price(stock_symbol, start, end):
@@ -690,7 +709,7 @@ def plot_sma_vs_closing_price(stock_symbol, start, end):
     st.plotly_chart(fig)
 
 
-# In[178]:
+# In[44]:
 
 
 def plot_ema_vs_closing_price(stock_symbol, start, end):
@@ -718,7 +737,7 @@ def plot_ema_vs_closing_price(stock_symbol, start, end):
     st.plotly_chart(fig)
 
 
-# In[179]:
+# In[45]:
 
 
 st.header("Trend Analysis using Indicators")
@@ -726,7 +745,7 @@ indicator_type = st.selectbox("Select Indicator Type", ["sma", "ema"])
                                                
 
 
-# In[180]:
+# In[46]:
 
 
 if indicator_type == "sma":
@@ -738,7 +757,7 @@ elif indicator_type == 'ema':
 
 # ## Simulation
 
-# In[181]:
+# In[47]:
 
 
 def monte_carlo_simulation(returns, initial_investment, num_years, num_simulations):
@@ -752,7 +771,7 @@ def monte_carlo_simulation(returns, initial_investment, num_years, num_simulatio
     return portfolio_values
 
 
-# In[182]:
+# In[82]:
 
 
 st.header("Stock Portfolio Monte Carlo Simulation")
@@ -763,20 +782,22 @@ initial_investment = st.number_input("Initial Portfolio Value:", min_value=1000,
 num_years = st.number_input("Number of Simulation Years:", min_value=1, value=5)
 num_simulations = st.number_input("Number of Simulations:", min_value=1, value=10)
 
+st.write("To run the Monte Carlo Simulation, simply adjust the input parameters above (Initial Portfolio Value, Number of Simulation Years, Number of Simulations), and then click the 'Run Simulation' button below.")
 
-# In[183]:
+
+# In[49]:
 
 
 stock_returns = stock_data['Adj Close'].pct_change().dropna()
 
 
-# In[184]:
+# In[50]:
 
 
 simulation_results = monte_carlo_simulation(stock_returns, initial_investment, num_years, num_simulations)
 
 
-# In[185]:
+# In[51]:
 
 
 fig_simulation = go.Figure()
@@ -795,7 +816,18 @@ fig_simulation.update_layout(
 st.plotly_chart(fig_simulation)
 
 
-# In[1]:
+# In[81]:
+
+
+st.subheader("Interpreting Results and Making Decisions")
+st.write("The simulation provides a range of potential outcomes for your portfolio value over the specified time horizon.")
+st.write("Here's how you can use the results:")
+st.markdown("- **Analyze the Range**: Examine the spread of potential portfolio values. A wider spread indicates higher risk.")
+st.markdown("- **Identify Worst-Case Scenarios**: Look at the lower percentiles (e.g., 5th or 10th percentile) to identify potential worst-case scenarios.")
+st.markdown("- **Plan for Uncertainty**: Use the insights to make informed decisions about your investment strategy, asset allocation, and risk management.")
+
+
+# In[52]:
 
 
 warning_text = "<span style='color:red;'>Bias Warning</span>"
