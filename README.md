@@ -1,6 +1,7 @@
 # Stock Analysis Dashboard
 
 Welcome to the Stock Analysis Dashboard, a powerful tool for comprehensive stock market analysis and decision-making. This open-source project empowers investors and traders with data-driven insights, cognitive bias mitigation strategies, and advanced visualizations, all in one user-friendly interface.
+App Link: https://stock-analysis-dashboard.streamlit.app/
 
 ## Features
 
